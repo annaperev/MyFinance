@@ -18,7 +18,7 @@ public class Item {
     private String name;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="parent_item_id",nullable = false)
+    @JoinColumn(name="parent_item_id")
     private Item parentItem;
 
     @Column(name="type", nullable = false)

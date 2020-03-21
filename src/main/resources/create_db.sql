@@ -79,7 +79,7 @@ CREATE TABLE public.item
     id bigint NOT NULL DEFAULT nextval('item_id_seq'::regclass),
     name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     type integer NOT NULL,
-    parent_item_id bigint NOT NULL,
+    parent_item_id bigint,
     CONSTRAINT item_pkey PRIMARY KEY (id),
     CONSTRAINT fka3rmlgvinyx0de6jvogft00r8 FOREIGN KEY (parent_item_id)
         REFERENCES public.item (id) MATCH SIMPLE
