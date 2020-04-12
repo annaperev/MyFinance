@@ -1,6 +1,11 @@
 package com.anna.myfinance.dal.entities;
 
 import com.anna.myfinance.enums.OperationType;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,9 +19,12 @@ public class Operation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "date", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "M/d/yyyy")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate date;
 
     @Column(name="type", nullable = false)

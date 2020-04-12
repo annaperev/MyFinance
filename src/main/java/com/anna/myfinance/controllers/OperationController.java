@@ -3,7 +3,8 @@ package com.anna.myfinance.controllers;
 import com.anna.myfinance.dal.entities.Operation;
 import com.anna.myfinance.dal.repos.OperationRepo;
 import com.anna.myfinance.errors.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.anna.myfinance.errors.ValidationException;
+import com.anna.myfinance.services.OperationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,18 +13,24 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/operations")
 public class OperationController {
 
-    @Autowired
-    private OperationRepo operationRepo;
+    private final OperationRepo operationRepo;
 
-    @GetMapping("/operations")
+    private final OperationService operationService;
+
+    public OperationController(OperationRepo operationRepo, OperationService operationService) {
+        this.operationRepo = operationRepo;
+        this.operationService = operationService;
+    }
+
+    @GetMapping()
     public List<Operation> getAllOperations() {
         return operationRepo.findAll();
     }
 
-    @GetMapping("/operations/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Operation> getOperationById(@PathVariable(value = "id") Long operationId)
             throws ResourceNotFoundException {
         Operation operation = operationRepo.findById(operationId)
@@ -31,12 +38,12 @@ public class OperationController {
         return ResponseEntity.ok().body(operation);
     }
 
-    @PostMapping("/operations")
-    public Operation createOperation(/*@Valid*/ @RequestBody Operation operation) {//TODO
-        return operationRepo.save(operation);
+    @PostMapping()
+    public Operation createOperation(/*@Valid*/ @RequestBody Operation operation) throws ValidationException {//TODO
+        return operationService.save(operation);
     }
 
-    @PutMapping("/operations/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Operation> updateOperation(@PathVariable(value = "id") Long operationId,
                                                    /*@Valid*/ @RequestBody Operation operationDetails) throws ResourceNotFoundException {//TODO
         Operation operation = operationRepo.findById(operationId)
@@ -51,7 +58,7 @@ public class OperationController {
         return ResponseEntity.ok(updatedOperation);
     }
 
-    @DeleteMapping("/operations/{id}")
+    @DeleteMapping("/{id}")
     public Map<String, Boolean> deleteOperation(@PathVariable(value = "id") Long operationId)
             throws ResourceNotFoundException {
         Operation operation = operationRepo.findById(operationId)
